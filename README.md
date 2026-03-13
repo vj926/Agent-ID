@@ -16,7 +16,9 @@ List of tools required
 Set up - 
 1. How to get ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS - Open Microsoft graph explorer with Microsoft Entra Admin center credentials and look at the access token option on the screen. Copy the Access token and paste it where required.
 2. Agent Sponsor URI - Got to Entra Admin center. Click on the user profile who should act as a sponsor. Click on the user profile, copy the Object ID
+3. How to remove Directory ReadWrite access all permission for the access token to work - https://learn.microsoft.com/en-us/answers/questions/1346583/how-to-remove-some-of-the-permissions-from-graph-e
 Task 1 - How to create Agent Identity Blueprint
+4.Agent Blueprint App ID - Open Entra Admin Center, Agent ID Preview tab, All Agent Identities, Click View all Blueprints. Then Click the Blueprint you just created. It has App ID. Copy the App ID. 
 ---
 
 ## 01 Creating the Agent ID Blueprint
@@ -25,7 +27,7 @@ Task 1 - How to create Agent Identity Blueprint
 ```bash
  curl --request POST \
   --url https://graph.microsoft.com/beta/applications/ \
-  --header 'Authorization: {{ ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS }}' \
+  --header 'Authorization: Bearer {{ ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS }}' \
   --header 'Content-Type: application/json' \
   --header 'OData-Version: 4.0' \
   --header 'User-Agent: insomnia/12.4.0' \
@@ -65,5 +67,40 @@ Expected result
 	"publisherDomain": "M365t09313528.onmicrosoft.com",
 	"signInAudience": "AzureADMyOrg",
 	"tags": [],
+}
+```
+### 01.02 Create Agent Identity Blueprint Principal
+```bash
+curl --request POST \
+  --url https://graph.microsoft.com/beta/serviceprincipals/graph.agentIdentityBlueprintPrincipal \
+  --header 'Authorization: Bearer {{ ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS }} ' \
+  --header 'Content-Type: application/json' \
+  --header 'OData-Version: 4.0' \
+  --header 'User-Agent: insomnia/12.4.0' \
+  --data '{
+  "appId": " Agent_blueprint_appId"
+}'
+Expected result
+```json
+{
+	"error": {
+		"code": "Request_MultipleObjectsWithSameKeyValue",
+		"message": "The service principal cannot be created, updated, or restored because the service principal name c642e789-57df-465d-8407-aea848cc4057 is already in use.",
+		"details": [
+			{
+				"code": "ObjectConflict",
+				"message": "The service principal cannot be created, updated, or restored because the service principal name c642e789-57df-465d-8407-aea848cc4057 is already in use.",
+				"target": "None",
+				"blockedWord": "",
+				"prefix": "",
+				"suffix": ""
+			}
+		],
+		"innerError": {
+			"date": "2026-03-12T23:50:07",
+			"request-id": "20879765-24ec-45ea-b420-e9e35cf61a50",
+			"client-request-id": "20879765-24ec-45ea-b420-e9e35cf61a50"
+		}
+	}
 }
 ```
