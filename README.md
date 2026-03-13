@@ -37,3 +37,101 @@ Task 1 - How to create Agent Identity Blueprint
   ]
 }'
 ```
+Expected result
+```json
+{
+	"@odata.context": "https://graph.microsoft.com/beta/$metadata#applications/$entity",
+	"@odata.type": "#microsoft.graph.agentIdentityBlueprint",
+	"id": "70b20c91-fe87-46e7-8c92-24e65a0e199c",
+	"deletedDateTime": null,
+	"appId": "70b20c91-fe87-46e7-8c92-24e65a0e199c",
+	"applicationTemplateId": null,
+	"identifierUris": [],
+	"createdByAppId": "de8bc8b5-d9f9-48b1-a8ad-b748da725064",
+	"createdDateTime": "2026-03-12T20:37:33.8446502Z",
+	"description": null,
+	"disabledByMicrosoftStatus": null,
+	"displayName": "[ai] Blueprint for Digital Worker 01",
+	"isAuthorizationServiceEnabled": false,
+	"isDeviceOnlyAuthSupported": null,
+	"isDisabled": null,
+	"isFallbackPublicClient": null,
+	"isManagementRestricted": null,
+	"groupMembershipClaims": null,
+	"nativeAuthenticationApisEnabled": null,
+	"notes": null,
+	"oauth2RequirePostResponse": false,
+	"orgRestrictions": [],
+	"publisherDomain": "M365t09313528.onmicrosoft.com",
+	"signInAudience": "AzureADMyOrg",
+	"tags": [],
+	"tokenEncryptionKeyId": null,
+	"uniqueName": null,
+	"defaultRedirectUri": null,
+	"samlMetadataUrl": null,
+	"serviceManagementReference": null,
+	"addIns": [],
+	"appCapabilities": [],
+	"certification": null,
+	"optionalClaims": null,
+	"windows": null,
+	"requestSignatureVerification": null,
+	"servicePrincipalLockConfiguration": null,
+	"migrationStatus": null,
+	"api": {
+		"requestedAccessTokenVersion": 2,
+		"acceptMappedClaims": null,
+		"knownClientApplications": [],
+		"oauth2PermissionScopes": [],
+		"preAuthorizedApplications": [],
+		"tokenEncryptionSetting": {
+			"scheme": null,
+			"audience": null,
+			"automatedTokenVersion": {
+				"current": null,
+				"available": []
+			}
+		}
+	},
+	"appRoles": [],
+	"publicClient": {
+		"redirectUris": []
+	},
+	"info": {
+		"termsOfServiceUrl": null,
+		"supportUrl": null,
+		"privacyStatementUrl": null,
+		"marketingUrl": null,
+		"logoUrl": null
+	},
+	"keyCredentials": [],
+	"parentalControlSettings": {
+		"countriesBlockedForMinors": [],
+		"legalAgeGroupRule": "Allow"
+	},
+	"passwordCredentials": [],
+	"requiredResourceAccess": [],
+	"signInAudienceRestrictions": {
+		"@odata.type": "#microsoft.graph.unrestrictedAudience",
+		"kind": "unrestricted"
+	},
+	"verifiedPublisher": {
+		"displayName": null,
+		"verifiedPublisherId": null,
+		"addedDateTime": null
+	},
+	"web": {
+		"redirectUris": [],
+		"homePageUrl": null,
+		"logoutUrl": null,
+		"redirectUriSettings": [],
+		"implicitGrantSettings": {
+			"enableIdTokenIssuance": false,
+			"enableAccessTokenIssuance": false
+		}
+	},
+	"spa": {
+		"redirectUris": []
+	}
+}
+```
