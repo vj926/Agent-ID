@@ -105,3 +105,30 @@ Expected result
 	}
 }
 ```
+### 01.03  Add Password credential (client secret) to the Agent Blueprint
+```bash
+curl --request POST \
+  --url https://graph.microsoft.com/beta/applications/Agent_Blueprint_ObjectID/addPassword \
+  --header 'Authorization: Bearer {{ ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS }}' \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/12.4.0' \
+  --data '{
+  "passwordCredential": {
+    "displayName": "Dummy Secret",
+    "endDateTime": "2026-08-05T23:59:59Z"
+  }
+}'
+```
+Expected Respone
+```json
+{
+	"@odata.context": "https://graph.microsoft.com/beta/$metadata#microsoft.graph.passwordCredential",
+	"customKeyIdentifier": null,
+	"endDateTime": "2026-08-05T23:59:59Z",
+	"keyId": "b9700ba4-663a-45af-81ab-963167973e1c",
+	"startDateTime": "2026-03-12T23:17:19.5583321Z",
+	"secretText": "Qr***",
+	"hint": "Qr0",
+	"displayName": "Dummy Secret"
+}
+```
