@@ -182,3 +182,69 @@ Expected response
 	"access_token": "ey***"
 }
 ```
+### 01.05  Exposing API (scope) for the Agent Blueprint
+```bash
+curl --request PATCH \
+  --url https://graph.microsoft.com/beta/applications/{{ _.agent_blueprint_appObjectId }} \
+  --header 'Authorization: Bearer {{ ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS }}' \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/12.4.0' \
+  --data '{
+  "identifierUris": [
+    "api://{{ _.agent_blueprint_appId }}"
+  ],
+  "api": {
+    "oauth2PermissionScopes": [
+      {
+        "adminConsentDescription": "Allow the application to access the agent on behalf of the signed-in user.",
+        "adminConsentDisplayName": "Access agent",
+        "id": "{{ GENERATED_GUID }}",
+        "isEnabled": true,
+        "type": "User",
+        "value": "access_agent"
+      }
+    ]
+  }
+}'
+```
+## 02 Creating the Agent Identity
+### 02.01  Creating Agent ID
+```bash
+curl --request POST \
+  --url https://graph.microsoft.com/beta/serviceprincipals/Microsoft.Graph.AgentIdentity \
+  --header 'Authorization: Bearer {{ ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS }}' \
+  --header 'Content-Type: application/json' \
+  --header 'OData-Version: 4.0' \
+  --header 'User-Agent: insomnia/12.4.0' \
+  --data '{
+    "displayName": "[ai] Agent Identity for Digital Worker 01",
+    "agentAppId": "{{ _.agent_blueprint_appId }}",
+	  "sponsors@odata.bind": [
+      "https://graph.microsoft.com/beta/users/{{ _.agent_sponsor_URI }}"
+    ]
+  }'
+```
+Expected Response
+```json
+{
+	"@odata.context": "https://graph.microsoft.com/beta/$metadata#servicePrincipals/microsoft.graph.agentIdentity/$entity",
+	"id": "6266698c-faf8-4806-a251-ec250a1ff466",
+	"deletedDateTime": null,
+	"accountEnabled": true,
+	"alternativeNames": [],
+	"createdByAppId": "c642e789-57df-465d-8407-aea848cc4057",
+	"createdDateTime": null,
+	"deviceManagementAppType": null,
+	"appDescription": null,
+	"appDisplayName": null,
+	"appId": "6266698c-faf8-4806-a251-ec250a1ff466",
+	"applicationTemplateId": null,
+	"appOwnerOrganizationId": null,
+	"appRoleAssignmentRequired": false,
+	"assignmentRequiredForPrincipalTypes": null,
+	"description": null,
+	"disabledByMicrosoftStatus": null,
+	"displayName": "[ai] Agent Identity for Digital Worker 01",
+	}
+}
+```
