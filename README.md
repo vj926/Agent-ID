@@ -80,6 +80,7 @@ curl --request POST \
   --data '{
   "appId": " Agent_blueprint_appId"
 }'
+```
 Expected result
 ```json
 {
