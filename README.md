@@ -34,43 +34,19 @@ This repository demonstrates the following activities related to **Microsoft Ent
 4. Open the user profile.
 5. Copy the **Object ID** of the user.
 ---
-### 3. remove directory.readwrite.all permission (if needed)
+## 3. Remove directory.readwrite.all permission (if needed)
 If the access token fails due to permission conflicts, remove the directory.readwrite.all permission.
 reference documentation:  
 [how to remove some of the permissions from graph explorer](https://learn.microsoft.com/en-us/answers/questions/1346583/how-to-remove-some-of-the-permissions-from-graph-e)
 
 ---
-# Task 1: Create Agent Identity Blueprint
-
-## Get Agent Blueprint App ID
-
+## 4. Get Agent Blueprint App ID
 1. Open **Microsoft Entra Admin Center**.
 2. Navigate to **Agent ID (Preview)**.
 3. Click **All Agent Identities**.
 4. Select **View All Blueprints**.
 5. Click the **Blueprint** you created.
 6. Copy the **Application ID (App ID)** from the blueprint.
-
-This App ID will be used in later steps.
-This repository consists of the following activities 
-1. How to create Agent Blueprint
-2. How to create Agent Identity Blueprint Principal
-3. Add password credential (client secret) to the Agent Blueprint
-4. Get Access token from Agent Blueprint
-5. Exposing API (scope) for Agent Blueprint
-6. Create Agent identity
-7. Creating Agentic User
-Environment Setup
-List of tools required
-1. Insomnia - https://insomnia.rest/download (If your machine has windows OS, make sure that Windows defender allows the external apps to open)
-2. Entra Admin center - You need to login to the Entra admin center. You need Tenant ID, Sponsor ID from this portal
-
-Set up - 
-1. How to get ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS - Open Microsoft graph explorer with Microsoft Entra Admin center credentials and look at the access token option on the screen. Copy the Access token and paste it where required.
-2. Agent Sponsor URI - Got to Entra Admin center. Click on the user profile who should act as a sponsor. Click on the user profile, copy the Object ID
-3. How to remove Directory ReadWrite access all permission for the access token to work - https://learn.microsoft.com/en-us/answers/questions/1346583/how-to-remove-some-of-the-permissions-from-graph-e
-Task 1 - How to create Agent Identity Blueprint
-4.Agent Blueprint App ID - Open Entra Admin Center, Agent ID Preview tab, All Agent Identities, Click View all Blueprints. Then Click the Blueprint you just created. It has App ID. Copy the App ID. 
 ---
 
 ## 01 Creating the Agent ID Blueprint
