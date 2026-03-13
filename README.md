@@ -34,10 +34,11 @@ This repository demonstrates the following activities related to **Microsoft Ent
 4. Open the user profile.
 5. Copy the **Object ID** of the user.
 ---
-## 3. Remove Directory.ReadWrite.All Permission (If Needed)
-If the access token fails due to permission conflicts, remove the **Directory.ReadWrite.All** permission.
-Reference documentation:  
-https://learn.microsoft.com/en-us/answers/questions/1346583/how-to-remove-some-of-the-permissions-from-graph-e
+### 3. remove directory.readwrite.all permission (if needed)
+If the access token fails due to permission conflicts, remove the directory.readwrite.all permission.
+reference documentation:  
+[how to remove some of the permissions from graph explorer](https://learn.microsoft.com/en-us/answers/questions/1346583/how-to-remove-some-of-the-permissions-from-graph-e)
+
 ---
 # Task 1: Create Agent Identity Blueprint
 
