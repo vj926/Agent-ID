@@ -132,3 +132,26 @@ Expected Respone
 	"displayName": "Dummy Secret"
 }
 ```
+### 01.04  Get Access Token from Agent Blueprint
+```bash
+curl --request POST \
+  --url https://login.microsoftonline.com/TENANT_ID/oauth2/v2.0/token \
+  --header 'Authorization: Bearer YOUR_BLUENPRINT_APP_ID' \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --header 'OData-Version: 4.0' \
+  --header 'User-Agent: insomnia/12.4.0' \
+  --cookie 'fpc=Ahf1c03AJX5Nnnw2O2K3O0wsIdGkAgAAAFJIReEOAAAA8yufIQEAAACRSEXhDgAAAA; x-ms-gateway-slice=estsfd; stsservicecookie=estsfd' \
+  --data client_id=YOUR_BLUEPRINT_APP_ID \
+  --data 'client_secret=YOUR_SECRET_FROM_01.03_OUTPUT' \
+  --data scope=https://graph.microsoft.com/.default \
+  --data grant_type=client_credentials
+```
+Expected response
+```json
+{
+	"token_type": "Bearer",
+	"expires_in": 3599,
+	"ext_expires_in": 3599,
+	"access_token": "ey***"
+}
+```
