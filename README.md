@@ -17,6 +17,11 @@ Set up -
 1. How to get ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS - Open Microsoft graph explorer with Microsoft Entra Admin center credentials and look at the access token option on the screen. Copy the Access token and paste it where required.
 2. Agent Sponsor URI - Got to Entra Admin center. Click on the user profile who should act as a sponsor. Click on the user profile, copy the Object ID
 Task 1 - How to create Agent Identity Blueprint
+---
+
+## 01 Creating the Agent ID Blueprint
+
+### 01.01 Create the Agent Identity Blueprint (application)
 ```bash
  curl --request POST \
   --url https://graph.microsoft.com/beta/applications/ \
