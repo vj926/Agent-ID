@@ -1,5 +1,56 @@
-# Agent-ID
+# Agent Identity Setup and Operations
+This repository demonstrates the following activities related to **Microsoft Entra Agent Identity**.
+## Activities Covered
+1. Create an **Agent Identity Blueprint**
+2. Create an **Agent Identity Blueprint Principal**
+3. Add **Password Credential (Client Secret)** to the Agent Blueprint
+4. Get **Access Token** from Agent Blueprint
+5. **Expose API (scope)** for the Agent Blueprint
+6. Create **Agent Identity**
+7. Create **Agentic User**
+---
+# Environment Setup
+## Required Tools
+1. **Insomnia**  
+   Download: https://insomnia.rest/download  
+   *If your machine uses Windows OS, ensure Windows Defender allows external applications to open.*
+2. **Microsoft Entra Admin Center**  
+   Login to the Entra Admin Center.  
+   You will need the following from this portal:
+   - **Tenant ID**
+   - **Sponsor ID**
+---
+# Setup Steps
+## 1. Get ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS
+1. Open **Microsoft Graph Explorer**.
+2. Login using your **Microsoft Entra Admin Center credentials**.
+3. Locate the **Access Token** option on the screen.
+4. Copy the **Access Token** and use it where required in the API calls.
+---
+## 2. Get Agent Sponsor URI
+1. Go to **Microsoft Entra Admin Center**.
+2. Navigate to **Users**.
+3. Click on the user who should act as the **Sponsor**.
+4. Open the user profile.
+5. Copy the **Object ID** of the user.
+---
+## 3. Remove Directory.ReadWrite.All Permission (If Needed)
+If the access token fails due to permission conflicts, remove the **Directory.ReadWrite.All** permission.
+Reference documentation:  
+https://learn.microsoft.com/en-us/answers/questions/1346583/how-to-remove-some-of-the-permissions-from-graph-e
+---
+# Task 1: Create Agent Identity Blueprint
 
+## Get Agent Blueprint App ID
+
+1. Open **Microsoft Entra Admin Center**.
+2. Navigate to **Agent ID (Preview)**.
+3. Click **All Agent Identities**.
+4. Select **View All Blueprints**.
+5. Click the **Blueprint** you created.
+6. Copy the **Application ID (App ID)** from the blueprint.
+
+This App ID will be used in later steps.
 This repository consists of the following activities 
 1. How to create Agent Blueprint
 2. How to create Agent Identity Blueprint Principal
