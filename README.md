@@ -245,6 +245,24 @@ Expected Response
 	"description": null,
 	"disabledByMicrosoftStatus": null,
 	"displayName": "[ai] Agent Identity for Digital Worker 01",
-	}
+	....
 }
 ```
+### 02.02  Creating Agentic UserID
+```bash
+curl --request POST \
+  --url https://graph.microsoft.com/beta/users \
+  --header 'Authorization: Bearer {{ ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS }}' \
+  --header 'Content-Type: application/json' \
+  --header 'OData-Version: 4.0' \
+  --header 'User-Agent: insomnia/12.4.0' \
+  --data '{
+    "@odata.type":"microsoft.graph.agentUser",
+    "displayName": "[ai] Digital Worker 01 Agent User",
+    "userPrincipalName": "AGENT_USER_UPN",
+    "mailNickname": "AGENT_USER_NICKNAME",
+    "accountEnabled": true,
+    "identityParentId":"AGENT_IDENTITY_CLIENTID"
+  }'
+```
+### 02.03  Grant (consent) permissions for the Agentic User
