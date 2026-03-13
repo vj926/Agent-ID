@@ -48,9 +48,8 @@ reference documentation:
 5. Click the **Blueprint** you created.
 6. Copy the **Application ID (App ID)** from the blueprint.
 ---
-
+# Agent Identity End-to-End Lab Guide
 ## 01 Creating the Agent ID Blueprint
-
 ### 01.01 Create the Agent Identity Blueprint (application)
 ```bash
  curl --request POST \
