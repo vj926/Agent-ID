@@ -8,6 +8,14 @@ This repository demonstrates the following activities related to **Microsoft Ent
 5. **Expose API (scope)** for the Agent Blueprint
 6. Create **Agent Identity**
 7. Create **Agentic User**
+8. Grent (consent) permissions for the Agentic user
+9. Obtain a Federated Identity Credential (FIC) for the Agent Blueprint
+10. Obtain a Federated Identity Credential (FIC) for the Agent Identity
+11. Obtain an Agentic User Token for MS Graph using the agent_blueprint_fic-token and Agent_ID_fic_token
+12. User the agent_user_token to call MS Graph/me endpoint
+13. Get the groups the Agentic User (Digital colleague) is member of
+14. Obtain the Agent Blueprint FIC Token (Autonomous Agent)
+15. Obtain the Agent Identity MS Graph access token
 ---
 # Environment Setup
 ## Required Tools
@@ -262,3 +270,47 @@ curl --request POST \
   }'
 ```
 ### 02.03  Grant (consent) permissions for the Agentic User
+You need Tenant_ID, agent_identity_clientId to enable the permissions. We provide consent explicitly to the Agentic user. Add the below link in the browser and you are redirected to Entra to consent with the permissions. 
+```bash
+https://login.microsoftonline.com/{{ _.tenant_id }}/v2.0/adminconsent?client_id={{agent_identity_clientId}}&scope=User.Read+groupmember.read.all+Chat.ReadWrite+Calendars.ReadWrite+Mail.ReadWrite+Contacts.Read+People.Read&redirect_uri=https://entra.microsoft.com/TokenAuthorize&state=xyz123
+```
+### 02.04  Obtain a Federated Identity Credetial (FIC) for the Agent Blueprint
+```bash
+curl --request POST \
+  --url _.token_url \
+  --header 'Authorization: Basic {{ _.agent_blueprint_appId }}:{{ _.agent_blueprint_clientSecret }}' \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --header 'User-Agent: insomnia/12.4.0' \
+  --data scope=api://AzureADTokenExchange/.default \
+  --data grant_type=client_credentials \
+  --data fmi_path={{ _.agent_identity_clientId }}
+```
+### 02.05  Obtain a Federated Identity Credetial (FIC) for the Agent Identity
+```bash
+curl --request POST \
+  --url token_url \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --header 'User-Agent: insomnia/12.4.0' \
+  --data client_id={{ _.agent_identity_clientId }} \
+  --data scope=api://AzureADTokenExchange/.default \
+  --data grant_type=client_credentials \
+  --data client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer \
+  --data client_assertion= {{ _.agent_blueprint_ficToken }}
+```
+### 02.05  Obtain an Agentic User token for MS Graph using the agent_blueprint_fic-token and agent_id_fic-token
+```bash
+curl --request POST \
+  --url token_url \
+  --header 'Content-Type: multipart/form-data' \
+  --header 'User-Agent: insomnia/12.4.0' \
+  --form client_id=agent_identity_clientId \
+  --form client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer \
+  --form client_assertion={{ _.agent_blueprint_ficToken }} \
+  --form grant_type=user_fic \
+  --form requested_token_use=on_behalf_of \
+  --form scope=https://graph.microsoft.com/.default \
+  --form username={{ _.agent_user_upn }} \
+  --form user_federated_identity_credential= {{ _.agent_identity_ficToken }}
+```
+### 02.05  Use the agent-user-token to call MS Graph /me endpoint
+```bash
