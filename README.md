@@ -276,14 +276,14 @@ curl --request POST \
     "identityParentId":"AGENT_IDENTITY_CLIENTID"
   }'
 ```
-## 03 Authenticate Agentic User
-
-### 03.01  Grant (consent) permissions for the Agentic User
+### 02.03  Grant (consent) permissions for the Agentic User
 You need Tenant_ID, agent_identity_clientId to enable the permissions. We provide consent explicitly to the Agentic user. Add the below link in the browser and you are redirected to Entra to consent with the permissions. 
 ```bash
 https://login.microsoftonline.com/{{ _.tenant_id }}/v2.0/adminconsent?client_id={{agent_identity_clientId}}&scope=User.Read+groupmember.read.all+Chat.ReadWrite+Calendars.ReadWrite+Mail.ReadWrite+Contacts.Read+People.Read&redirect_uri=https://entra.microsoft.com/TokenAuthorize&state=xyz123
 ```
-### 03.02  Obtain a Federated Identity Credetial (FIC) for the Agent Blueprint
+## 03 Authenticate Agentic User
+### 03.01  Obtain a Federated Identity Credetial (FIC) for the Agent Blueprint
+In this flow, the Agent Blueprint application (created in Step 01.01) authenticates using the client secret added in Step 01.03. However, the actual operations in the system should be performed by the Agent ID created in Step 02.01, because that identity represents the digital worker or agent. The token exchange process allows the system to take the authentication performed by the Agent Blueprint application and obtain a token that represents the Agent ID instead. This ensures that when the agent accesses resources or performs actions, the system records the activity under the Agent ID, not under the blueprint application.
 ```bash
 curl --request POST \
   --url _.token_url \
@@ -294,7 +294,8 @@ curl --request POST \
   --data grant_type=client_credentials \
   --data fmi_path={{ _.agent_identity_clientId }}
 ```
-### 03.03  Obtain a Federated Identity Credetial (FIC) for the Agent Identity
+### 03.02  Obtain a Federated Identity Credetial (FIC) for the Agent Identity
+Only Blueprint application can authenticate directly with Entra ID. Because of this design, the system first authenticates the Agent Blueprint application and obtains a FIC token in Step 03.02. That token is then used in Step 03.03 as a client assertion to obtain a token for the Agent Identity. This process is called token exchange, where the authenticated blueprint application requests a token on behalf of the agent identity. FIC token is specifically required for the token exchange process that allows the blueprint application to obtain a token representing the Agent Identity.
 ```bash
 curl --request POST \
   --url token_url \
@@ -306,7 +307,8 @@ curl --request POST \
   --data client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer \
   --data client_assertion= {{ _.agent_blueprint_ficToken }}
 ```
-### 03.04  Obtain an Agentic User token for MS Graph using the agent_blueprint_fic-token and agent_id_fic-token
+### 03.03  Obtain an Agentic User token for MS Graph using the agent_blueprint_fic-token and agent_id_fic-token
+Step 01.01 created the Agent Blueprint application, Step 02.01 created the Agent Identity from that blueprint, the later user step created the Agent User under that Agent Identity, Step 03.01 obtained the Blueprint FIC token, Step 03.02 obtained the Agent Identity FIC token, and this step combines those pieces to request a token for accessing Microsoft Graph on behalf of that Agent User.
 ```bash
 curl --request POST \
   --url token_url \
@@ -321,14 +323,16 @@ curl --request POST \
   --form username={{ _.agent_user_upn }} \
   --form user_federated_identity_credential= {{ _.agent_identity_ficToken }}
 ```
-### 03.05  Use the agent-user-token to call MS Graph /me endpoint
+### 03.04  Use the agent-user-token to call MS Graph /me endpoint
+This step uses the access token obtained in the previous step (the token generated after the on-behalf-of flow) to call Microsoft Graph. The request calls the /me endpoint, which returns information about the currently authenticated user. In this case, the Bearer token (agent_user_accessToken) represents the Agent User that was created earlier and whose identity was used in the on-behalf-of request.
 ```bash
 curl --request GET \
   --url https://graph.microsoft.com/v1.0/me \
   --header 'Authorization: Bearer {{ _.agent_user_accessToken }}' \
   --header 'User-Agent: insomnia/12.4.0'
 ```
-### 03.06 Get the groups the Agentic User (Digital Colleague) is member of
+### 03.05 Get the groups the Agentic User (Digital Colleague) is member of
+This step uses the Agent User access token obtained in the previous step to call Microsoft Graph and retrieve the security groups that the Agent User belongs to. The request calls the /me/getMemberGroups endpoint, which returns the IDs of all security-enabled groups associated with the currently authenticated user.
 ```bash
 curl --request POST \
   --url https://graph.microsoft.com/v1.0/me/getMemberGroups \
@@ -341,6 +345,7 @@ curl --request POST \
 ```
 ## 04 Authenticate the Agent Identity (Autonomous Agent)
 ### 04.01 Obtain the Agent Blueprint FIC token
+There is no fundamental difference in purpose between this code and the earlier Blueprint FIC token code. Both are requesting a Federated Identity Credential token for the Agent Blueprint, and in both cases the request is tied to the Agent Identity through fmi_path={{ _.agent_identity_clientId }}. The main difference is only in how the request is written. In the earlier version, the parameters were sent using --data with application/x-www-form-urlencoded. In this version, they are sent using --form with multipart/form-data. So the format of the HTTP request is different, but the logical purpose is the same. (How do we know if this autonomous or not ?? And why is the process different for this versus earlier one)
 ```bash
 curl --request POST \
   --url {{ _.token_url }}\
