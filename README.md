@@ -21,32 +21,28 @@ This repository demonstrates the following activities related to **Microsoft Ent
    - **Sponsor ID**
 ---
 # Setup Steps
-## 1. Get ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS
-1. Open **Microsoft Graph Explorer**.
-2. Login using your **Microsoft Entra Admin Center credentials**.
-3. Locate the **Access Token** option on the screen.
-4. Copy the **Access Token** and use it where required in the API calls.
+## Create Environment variable mentioned below
+1. Tenant ID - Go to Microsoft Entra Admin Center -> Overview Page -> Copy the Tenant ID
+2. ACCESS_TOKEN - Microsoft Graph Explorer with Entra credentials -> Locate the Access Token on the screen -> Copy the Access Token
+3. agent_sponsor_URI - Open Users (MS Entra Admin Center) -> Click on the Sponsor User (Can be any user who controls the Agent) -> Copy the Object ID of the user 
+4. agent_blueprint_appId - Copy the App ID result from 01.01
+5. client_secret - Copy the output "Secret Text" from 01.03
+6. Agentaccess_token - Copy the result from 01.04
+7. agent_user_upn - Create a User UPN with Text@tenantaddress. Example vij@M5633647.onmicrosoft.com
+8. agent_user_mailNickName - You can create a Nickname for the Agent User Mail ID. Example vijAgent
+9. GENERATED_GUID - randomly create a GUID from the internet
+10. agent_identity_clientId - Execute 02.01 -> Entra Admin Center -> Agent ID (Preview) -> Click the Agent ID just created and copy the Client ID
+11. agent_blueprint_ficToken - Execute 02.04 and copy the token from the output
+12. agent_identity_ficToken - Execute 02.05 and copt the token from the output
+13. agent_blueprint_appObjectId -Microsoft Entra Admin Center -> Agent ID (Preview) -> View All Agent Identities -> Agent Blueprints -> Click the Blueprint 
+14. agent_user_accessToken -
+15. token_url - https://login.microsoftonline.com/{{ _.Tenant_ID }}/oauth2/v2.0/token
 ---
-## 2. Get Agent Sponsor URI
-1. Go to **Microsoft Entra Admin Center**.
-2. Navigate to **Users**.
-3. Click on the user who should act as the **Sponsor**.
-4. Open the user profile.
-5. Copy the **Object ID** of the user.
----
-## 3. Remove directory.readwrite.all permission (if needed)
+Note - Remove directory.readwrite.all permission (if needed)
 If the access token fails due to permission conflicts, remove the directory.readwrite.all permission.
 reference documentation:  
 [how to remove some of the permissions from graph explorer](https://learn.microsoft.com/en-us/answers/questions/1346583/how-to-remove-some-of-the-permissions-from-graph-e)
 
----
-## 4. Get Agent Blueprint App ID
-1. Open **Microsoft Entra Admin Center**.
-2. Navigate to **Agent ID (Preview)**.
-3. Click **All Agent Identities**.
-4. Select **View All Blueprints**.
-5. Click the **Blueprint** you created.
-6. Copy the **Application ID (App ID)** from the blueprint.
 ---
 # Agent Identity End-to-End Lab Guide
 ## 01 Creating the Agent ID Blueprint
@@ -54,7 +50,7 @@ reference documentation:
 ```bash
  curl --request POST \
   --url https://graph.microsoft.com/beta/applications/ \
-  --header 'Authorization: Bearer {{ ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS }}' \
+  --header 'Authorization: Bearer {{ ACCESS_TOKEN }}' \
   --header 'Content-Type: application/json' \
   --header 'OData-Version: 4.0' \
   --header 'User-Agent: insomnia/12.4.0' \
@@ -100,7 +96,7 @@ Expected result
 ```bash
 curl --request POST \
   --url https://graph.microsoft.com/beta/serviceprincipals/graph.agentIdentityBlueprintPrincipal \
-  --header 'Authorization: Bearer {{ ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS }} ' \
+  --header 'Authorization: Bearer {{ ACCESS_TOKEN }} ' \
   --header 'Content-Type: application/json' \
   --header 'OData-Version: 4.0' \
   --header 'User-Agent: insomnia/12.4.0' \
@@ -136,7 +132,7 @@ Expected result
 ```bash
 curl --request POST \
   --url https://graph.microsoft.com/beta/applications/Agent_Blueprint_ObjectID/addPassword \
-  --header 'Authorization: Bearer {{ ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS }}' \
+  --header 'Authorization: Bearer {{ ACCESS_TOKEN }}' \
   --header 'Content-Type: application/json' \
   --header 'User-Agent: insomnia/12.4.0' \
   --data '{
@@ -186,7 +182,7 @@ Expected response
 ```bash
 curl --request PATCH \
   --url https://graph.microsoft.com/beta/applications/{{ _.agent_blueprint_appObjectId }} \
-  --header 'Authorization: Bearer {{ ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS }}' \
+  --header 'Authorization: Bearer {{ ACCESS_TOKEN }}' \
   --header 'Content-Type: application/json' \
   --header 'User-Agent: insomnia/12.4.0' \
   --data '{
