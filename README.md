@@ -55,6 +55,7 @@ reference documentation:
 # Agent Identity End-to-End Lab Guide
 ## 01 Creating the Agent ID Blueprint
 ### 01.01 Create the Agent Identity Blueprint (application)
+When you create the Agent Identity Blueprint, you are only creating the definition or template of the agent identity. It describes what the agent is, its name, and who sponsors it. However, this blueprint itself cannot authenticate or access resources. The Blueprint Principal is the actual identity created in the tenant from that blueprint. This principal is what can sign in, obtain tokens, and be granted permissions. Microsoft keeps these two separate because the blueprint acts like a design, while the principal is the real identity created from that design. 
 ```bash
  curl --request POST \
   --url https://graph.microsoft.com/beta/applications/ \
@@ -101,6 +102,8 @@ Expected result
 }
 ```
 ### 01.02 Create Agent Identity Blueprint Principal
+Blueprint (Application) = Defines the identity
+Blueprint Principal (Service Principal) = Actual identity that runs inside the tenant
 ```bash
 curl --request POST \
   --url https://graph.microsoft.com/beta/serviceprincipals/graph.agentIdentityBlueprintPrincipal \
@@ -137,6 +140,7 @@ Expected result
 }
 ```
 ### 01.03  Add Password credential (client secret) to the Agent Blueprint
+A password credential (client secret) is added to the Agent Blueprint Application that was created in 01.01. This credential functions as a secret that the application can use during authentication. Although the blueprint is a template, the actual identity created from the Blueprint operating within the tenant (the blueprint principal or service principal) requires a method to prove its identity when requesting a token from Entra ID. The password credential stored on the application object is used for this purpose. When the agent requests an access token, Entra ID verifies the Application ID and the associated secret before issuing the token. In summary, the earlier steps established the agent identity, and this step provides the credential required for that identity to authenticate and obtain tokens.
 ```bash
 curl --request POST \
   --url https://graph.microsoft.com/beta/applications/Agent_Blueprint_ObjectID/addPassword \
@@ -164,6 +168,7 @@ Expected Respone
 }
 ```
 ### 01.04  Get Access Token from Agent Blueprint
+Access Tokens are used for the Authorization (proving that the app has permission to access a resource). In Step 01.04, the Agent Blueprint application that was created in Step 01.01 uses the Application ID from that step and the password credential (client secret) that was added in Step 01.03 to authenticate with Entra ID’s token endpoint. During this request, Entra ID verifies that the Application ID and the client secret are valid. If the verification succeeds, Entra ID issues an access token. This access token is then used in later API requests to prove that the application has permission to access resources such as Microsoft Graph.
 ```bash
 curl --request POST \
   --url https://login.microsoftonline.com/TENANT_ID/oauth2/v2.0/token \
@@ -171,7 +176,6 @@ curl --request POST \
   --header 'Content-Type: application/x-www-form-urlencoded' \
   --header 'OData-Version: 4.0' \
   --header 'User-Agent: insomnia/12.4.0' \
-  --cookie 'fpc=Ahf1c03AJX5Nnnw2O2K3O0wsIdGkAgAAAFJIReEOAAAA8yufIQEAAACRSEXhDgAAAA; x-ms-gateway-slice=estsfd; stsservicecookie=estsfd' \
   --data client_id=YOUR_BLUEPRINT_APP_ID \
   --data 'client_secret=YOUR_SECRET_FROM_01.03_OUTPUT' \
   --data scope=https://graph.microsoft.com/.default \
@@ -187,6 +191,7 @@ Expected response
 }
 ```
 ### 01.05  Exposing API (scope) for the Agent Blueprint
+In Step 01.05, we are modifying the Agent Blueprint application that was created in Step 01.01 to expose an API permission (scope). This request uses the access token obtained in Step 01.04 to call Microsoft Graph and update the application configuration. In this step, the application is given an API identifier (api://{{ _.agent_blueprint_appId }}) and a permission scope called access_agent. This means that the Agent Blueprint application now exposes a permission that other applications can request when they want to interact with the agent.
 ```bash
 curl --request PATCH \
   --url https://graph.microsoft.com/beta/applications/{{ _.agent_blueprint_appObjectId }} \
@@ -212,11 +217,12 @@ curl --request PATCH \
 }'
 ```
 ## 02 Creating the Agent Identity
+In Step 02.01, you are creating the actual Agent ID by using the Agent Blueprint application created in Step 01.01. The key link to the earlier steps is the field agentAppId, which points to the Application ID of the Agent Blueprint. This tells Microsoft Graph which blueprint should be used as the base for creating this agent identity.
 ### 02.01  Creating Agent ID
 ```bash
 curl --request POST \
   --url https://graph.microsoft.com/beta/serviceprincipals/Microsoft.Graph.AgentIdentity \
-  --header 'Authorization: Bearer {{ ACCESS_TOKEN_FROM_OAUTH2_CLIENT_CREDENTIALS }}' \
+  --header 'Authorization: Bearer {{ ACCESS_TOKEN }}' \
   --header 'Content-Type: application/json' \
   --header 'OData-Version: 4.0' \
   --header 'User-Agent: insomnia/12.4.0' \
@@ -253,6 +259,7 @@ Expected Response
 }
 ```
 ### 02.02  Creating Agentic UserID
+This step creates an Agent User and associates it with the Agent ID created in Step 02.01. The relationship with the earlier steps is established through the identityParentId field. This field contains the client ID of the Agent ID, thereby linking the newly created Agent User to that specific Agent ID. In the earlier sequence, Step 01.01 created the Agent Blueprint application, and Step 02.01 used that blueprint to create the Agent ID. In this step, the Agent User is created as a child identity under that Agent ID by referencing its client ID through identityParentId.
 ```bash
 curl --request POST \
   --url https://graph.microsoft.com/beta/users \
@@ -270,6 +277,7 @@ curl --request POST \
   }'
 ```
 ## 03 Authenticate Agentic User
+
 ### 03.01  Grant (consent) permissions for the Agentic User
 You need Tenant_ID, agent_identity_clientId to enable the permissions. We provide consent explicitly to the Agentic user. Add the below link in the browser and you are redirected to Entra to consent with the permissions. 
 ```bash
