@@ -40,8 +40,8 @@ This repository demonstrates the following activities related to **Microsoft Ent
 8. agent_user_mailNickName - You can create a Nickname for the Agent User Mail ID. Example vijAgent
 9. GENERATED_GUID - randomly create a GUID from the internet
 10. agent_identity_clientId - Execute 02.01 -> Entra Admin Center -> Agent ID (Preview) -> Click the Agent ID just created and copy the Client ID
-11. agent_blueprint_ficToken - Execute 02.04 and copy the token from the output
-12. agent_identity_ficToken - Execute 02.05 and copt the token from the output
+11. agent_blueprint_ficToken - Execute 03.02 and copy the token from the output
+12. agent_identity_ficToken - Execute 03.03 and copt the token from the output
 13. agent_blueprint_appObjectId -Microsoft Entra Admin Center -> Agent ID (Preview) -> View All Agent Identities -> Agent Blueprints -> Click the Blueprint 
 14. agent_user_accessToken -
 15. token_url - https://login.microsoftonline.com/{{ _.Tenant_ID }}/oauth2/v2.0/token
@@ -269,12 +269,13 @@ curl --request POST \
     "identityParentId":"AGENT_IDENTITY_CLIENTID"
   }'
 ```
-### 02.03  Grant (consent) permissions for the Agentic User
+## 03 Authenticate Agentic User
+### 03.01  Grant (consent) permissions for the Agentic User
 You need Tenant_ID, agent_identity_clientId to enable the permissions. We provide consent explicitly to the Agentic user. Add the below link in the browser and you are redirected to Entra to consent with the permissions. 
 ```bash
 https://login.microsoftonline.com/{{ _.tenant_id }}/v2.0/adminconsent?client_id={{agent_identity_clientId}}&scope=User.Read+groupmember.read.all+Chat.ReadWrite+Calendars.ReadWrite+Mail.ReadWrite+Contacts.Read+People.Read&redirect_uri=https://entra.microsoft.com/TokenAuthorize&state=xyz123
 ```
-### 02.04  Obtain a Federated Identity Credetial (FIC) for the Agent Blueprint
+### 03.02  Obtain a Federated Identity Credetial (FIC) for the Agent Blueprint
 ```bash
 curl --request POST \
   --url _.token_url \
@@ -285,7 +286,7 @@ curl --request POST \
   --data grant_type=client_credentials \
   --data fmi_path={{ _.agent_identity_clientId }}
 ```
-### 02.05  Obtain a Federated Identity Credetial (FIC) for the Agent Identity
+### 03.03  Obtain a Federated Identity Credetial (FIC) for the Agent Identity
 ```bash
 curl --request POST \
   --url token_url \
@@ -297,7 +298,7 @@ curl --request POST \
   --data client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer \
   --data client_assertion= {{ _.agent_blueprint_ficToken }}
 ```
-### 02.05  Obtain an Agentic User token for MS Graph using the agent_blueprint_fic-token and agent_id_fic-token
+### 03.04  Obtain an Agentic User token for MS Graph using the agent_blueprint_fic-token and agent_id_fic-token
 ```bash
 curl --request POST \
   --url token_url \
@@ -312,5 +313,45 @@ curl --request POST \
   --form username={{ _.agent_user_upn }} \
   --form user_federated_identity_credential= {{ _.agent_identity_ficToken }}
 ```
-### 02.05  Use the agent-user-token to call MS Graph /me endpoint
+### 03.05  Use the agent-user-token to call MS Graph /me endpoint
 ```bash
+curl --request GET \
+  --url https://graph.microsoft.com/v1.0/me \
+  --header 'Authorization: Bearer {{ _.agent_user_accessToken }}' \
+  --header 'User-Agent: insomnia/12.4.0'
+```
+### 03.06 Get the groups the Agentic User (Digital Colleague) is member of
+```bash
+curl --request POST \
+  --url https://graph.microsoft.com/v1.0/me/getMemberGroups \
+  --header 'Authorization: Bearer {{ _.agent_user_accessToken }}' \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/12.4.0' \
+  --data '{
+  "securityEnabledOnly": true
+}'
+```
+## 04 Authenticate the Agent Identity (Autonomous Agent)
+### 04.01 Obtain the Agent Blueprint FIC token
+```bash
+curl --request POST \
+  --url {{ _.token_url }}\
+  --header 'Authorization: Basic {{ _.agent_blueprint_appId }}:{{ _.client_secret }}' \
+  --header 'Content-Type: multipart/form-data' \
+  --header 'User-Agent: insomnia/12.4.0' \
+  --form scope=api://AzureADTokenExchange/.default \
+  --form grant_type=client_credentials \
+  --form fmi_path={{ _.agent_identity_clientId }}
+```
+### 04.02 Obtain the Agent Identity MS Graph acess token
+```bash
+curl --request POST \
+  --url {{ _.token_url }} \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --header 'User-Agent: insomnia/12.4.0' \
+  --data client_id={{ _.agent_identity_clientId }} \
+  --data scope=https://graph.microsoft.com/.default \
+  --data grant_type=client_credentials \
+  --data client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer \
+  --data client_assertion={{ _.agent_blueprint_ficToken }}
+```
