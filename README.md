@@ -53,6 +53,8 @@ reference documentation:
 
 ---
 # Agent Identity End-to-End Lab Guide
+<img width="1440" height="1561" alt="image" src="https://github.com/user-attachments/assets/ca142659-bd20-42c2-a103-fecc7fe2b5db" />
+
 ## 01 Creating the Agent ID Blueprint
 ### 01.01 Create the Agent Identity Blueprint (application)
 When you create the Agent Identity Blueprint, you are only creating the definition or template of the agent identity. It describes what the agent is, its name, and who sponsors it. However, this blueprint itself cannot authenticate or access resources. The Blueprint Principal is the actual identity created in the tenant from that blueprint. This principal is what can sign in, obtain tokens, and be granted permissions. Microsoft keeps these two separate because the blueprint acts like a design, while the principal is the real identity created from that design. 
