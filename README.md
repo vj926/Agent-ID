@@ -28,8 +28,8 @@ This repository demonstrates the following activities related to **Microsoft Ent
    - **Tenant ID**
    - **Sponsor ID**
 3. Permissions needed for the excercise -
-   ##AgentID Administrator (From Entra Admin Center Portal)
-   ##DelegatedPermissionGrant.ReadWrite.All (Microsoft Graph Explorer)
+   ## AgentID Administrator (From Entra Admin Center Portal)
+   ## DelegatedPermissionGrant.ReadWrite.All (Microsoft Graph Explorer)
 ---
 # Setup Steps
 ## Create Environment variable mentioned below
