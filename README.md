@@ -27,6 +27,9 @@ This repository demonstrates the following activities related to **Microsoft Ent
    You will need the following from this portal:
    - **Tenant ID**
    - **Sponsor ID**
+3. Permissions needed for the excercise -
+   AgentID Administrator (From Entra Admin Center Portal)
+   DelegatedPermissionGrant.ReadWrite.All (Microsoft Graph Explorer)
 ---
 # Setup Steps
 ## Create Environment variable mentioned below
