@@ -37,8 +37,42 @@ Enable a **Base44 agent** to authenticate as a **Microsoft Entra Agent Identity*
 | Agent Identity | Already created |
 | Base44 Agent | Created |
 | FIC Tokens | Generated |
-| Codebase | AgentID Demo (read-only) |
 
 ---
 
 ## 3. Architecture (High-Level Flow)
+Blueprint App (client_id + secret)
+↓
+Generate FIC Token (JWT)
+↓
+Pass FIC as client_assertion
+↓
+Exchange for Agent Identity Token
+↓
+Use token in 3rd-party agent (Base44)
+
+
+---
+
+## 4. Core Concept
+
+The flow works because Entra supports:
+
+- OAuth2 token exchange
+- JWT bearer assertions
+- Federated credentials
+
+---
+
+## 5. End-to-End Flow
+
+### Step 1 — Generate FIC Token (Blueprint)
+
+```bash
+POST https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token
+Authorization: Basic <BASE64(client_id:client_secret)>
+Content-Type: application/x-www-form-urlencoded
+
+scope=api://AzureADTokenExchange/.default
+grant_type=client_credentials
+fmi_path=<AGENT_IDENTITY_APP_ID>
