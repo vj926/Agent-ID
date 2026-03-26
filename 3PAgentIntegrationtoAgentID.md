@@ -1,3 +1,173 @@
+---
+title: "Connecting a 3rd-Party Agent (Base44) to Microsoft Entra Agent Identity"
+author: "Vijaya Nukala"
+date: "2026-03-26"
+status: "Successfully completed"
+platform: "Base44 (3rd-party agent platform)"
+identity_provider: "Microsoft Entra ID"
+---
+
+# Connecting a 3rd-Party Agent (Base44) to Microsoft Entra Agent Identity
+
+> **Git note:** This document is wrapped in a fenced Markdown block to guarantee
+> correct formatting when copy-pasted into GitHub, Azure DevOps, or any Markdown renderer.
+
+**Author:** Vijaya Nukala
+
+**Date:** March 26, 2026
+
+**Status:** Successfully completed
+
+**Platform:** Base44 (3rd-party agent platform)
+
+**Identity Provider:** Microsoft Entra ID
+
+---
+
+## Executive Summary
+
+This document provides a complete, end-to-end, step-by-step walkthrough proving that a **3rd-party agent built on Base44** can authenticate using **Microsoft Entra Agent Identity** **without using any Microsoft SDK**.
+
+The integration relies on **standard OAuth 2.0 client_credentials flow with Federated Identity Credentials (FIC)**.
+
+Because the flow uses only HTTP POST requests and JWT assertions, **any agent platform capable of making HTTP requests can adopt Entra Agent Identity**.
+
+This proof establishes that:
+
+- Entra Agent Identity is platform-agnostic
+- No native OIDC support is required in the agent platform
+- No Microsoft SDK is required
+- The resulting identity is real, signed, auditable, and enterprise-grade
+
+---
+
+## 1. Objective
+
+Demonstrate that a **Base44 agent (3rd-party, no-code platform)** can authenticate as a **Microsoft Entra Agent Identity**, using only standard OAuth2 flows, and obtain a valid Entra-issued JWT that can be trusted by Microsoft services.
+
+---
+
+## 2. Starting State (Pre-requisites)
+
+The following assets already existed before starting this work:
+
+| Asset | Details |
+|------|---------|
+| Entra tenant | 98430660-2a7e-4e6b-b49c-800a8ba8b657 |
+| Blueprint | "Blueprint for Digital Worker 03" (created via AgentID Demo project) |
+| Agent Identity | Created via the AgentID Demo project |
+| Base44 agent | Agent created using Base44 no-code platform |
+| FIC tokens | Previously generated for Blueprint and Agent Identity |
+| Existing codebase | AgentID Demo project (read-only) at `C:\\Users\\vijnukala\\OneDrive - Microsoft\\Desktop\\Code\\AgentID Demo` |
+
+---
+
+## 3. Why This Works Without a Microsoft SDK
+
+Microsoft Entra Agent Identity relies on **standard OAuth 2.0 with JWT bearer assertions**.
+
+The authentication chain consists of two standard token exchanges:
+
+1. **Blueprint authenticates** using `client_credentials` (client secret) and receives a **FIC token (JWT)**
+2. The **FIC token** is passed as a `client_assertion` and exchanged for an **Agent Identity access token**
+
+The result is a **signed Entra JWT** representing the Agent Identity.
+
+Because this flow uses only:
+
+- HTTP POST requests
+- OAuth2 parameters
+- JWTs
+
+Any platform that can make HTTP requests can perform this flow. No SDK is required.
+
+---
+
+## 4. End-to-End Process Overview
+
+The work progressed in four phases:
+
+1. **Discovery** – Understand Base44 capabilities and existing tokens
+2. **Investigation** – Map real Entra identities and resolve mismatches
+3. **Resolution** – Fix disabled apps and credential issues
+4. **Deployment** – Connect Base44 to Entra and validate end-to-end
+
+---
+
+## 5. Phase A – Discovery
+
+### Step 1: Check Base44 for Native OIDC Support
+
+**Action**
+
+Investigated whether Base44 exposes an OIDC issuer or platform-generated identity token.
+
+**Why this mattered**
+
+If Base44 supported OIDC natively, Entra could directly trust Base44 as an external identity provider, enabling automatic token rotation.
+
+**Result**
+
+Base44 does not provide native OIDC support.
+
+**Outcome**
+
+A manual FIC token approach was required:
+
+- Generate the FIC token externally
+- Store it as a secret inside Base44
+
+---
+
+### Step 2: Decode Existing FIC Tokens
+
+**Action**
+
+Decoded existing FIC tokens using a local PowerShell JWT decoder (`decode-jwt.ps1`).
+
+**Why**
+
+To inspect the `iss`, `sub`, and `aud` claims and understand which Entra identities the tokens represented.
+
+#### Blueprint FIC Token (decoded)
+
+| Claim | Value |
+|------|-------|
+| iss | https://login.microsoftonline.com/98430660-2a7e-4e6b-b49c-800a8ba8b657/v2.0 |
+| sub | /eid1/c/pub/t/YAZDmH4qa060nIAKi6i2Vw/a/mnHkeIkheE61Vd6lz2psqg/41477c82-019e-4f50-80ca-d8e051844894 |
+| aud | fb60f99c-7a34-4190-8149-302f77469936 |
+
+#### Agent Identity FIC Token (decoded)
+
+| Claim | Value |
+|------|-------|
+| iss | https://login.microsoftonline.com/98430660-2a7e-4e6b-b49c-800a8ba8b657/v2.0 |
+| sub | 41477c82-019e-4f50-80ca-d8e051844894 |
+| aud | fb60f99c-7a34-4190-8149-302f77469936 |
+
+**Key observation**
+
+Both tokens referenced the same `aud`, which required verification.
+
+---
+
+## 6. Phase B – Investigation
+
+### Step 3: Verify aud App ID Exists
+
+**Action**
+
+Checked whether `fb60f99c-7a34-4190-8149-302f77469936` exists as an App Registration or Service Principal.
+
+**Graph queries**
+
+```json
+GET /v1.0/applications?$filter=appId eq 'fb60f99c-7a34-4190-8149-302f77469936'
+GET /v1.0/servicePrincipals?$filter=appId eq 'fb60f99c-7a34-4190-8149-302f77469936'
+
+
+
+
 
 Connecting a 3rd-Party Agent (Base44) to Microsoft Entra Agent Identity
 Author: Vijaya Nukala
