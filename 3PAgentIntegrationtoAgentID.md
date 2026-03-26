@@ -1,8 +1,5 @@
 # Connecting a 3rd-Party Agent (Base44) to Microsoft Entra Agent Identity
 
-**Author:** Vijaya Nukala  
-**Date:** March 26, 2026  
-**Status:** Completed  
 **Platform:** Base44 (3rd-party agent platform)  
 **Identity Provider:** Microsoft Entra ID  
 
