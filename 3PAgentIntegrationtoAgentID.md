@@ -69,8 +69,6 @@ The flow works because Entra supports:
 ### Step 1 — Generate FIC Token (Blueprint)
 
 ```bash
-### Step 1 — Generate FIC Token (Blueprint)
-
 In this step, the **Blueprint application authenticates using its own credentials**  
 and requests a **FIC token for a specific Agent Identity**.
 
@@ -81,13 +79,11 @@ Content-Type: application/x-www-form-urlencoded
 scope=api://AzureADTokenExchange/.default
 grant_type=client_credentials
 fmi_path=<AGENT_IDENTITY_APP_ID>
-
-```bash
+```
 ### Step 2 — Exchange FIC for Agent Identity Token
-In this step, the **Agent Identity takes over**.
-The Blueprint already generated a **FIC token (JWT)** in Step 1.  
-Now that token is used as proof to say:
-“I am allowed to act as this Agent Identity.”
+```bash
+In this step, the **Agent Identity takes over**. The Blueprint already generated a **FIC token (JWT)** in Step 1.  
+Now that token is used as proof to say: “I am allowed to act as this Agent Identity.”
 ```bash
 POST https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token
 Content-Type: application/x-www-form-urlencoded
@@ -95,3 +91,4 @@ client_id=<AGENT_IDENTITY_APP_ID>
 grant_type=client_credentials
 client_assertion=<FIC_TOKEN>
 scope=https://graph.microsoft.com/.default
+```
