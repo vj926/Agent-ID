@@ -1,6 +1,6 @@
 # Connecting a 3rd-Party Agent (Base44) to Microsoft Entra Agent Identity
 
-**Platform:** Base44 (3rd-party agent platform)  
+**Platform:** Base44 (3rd-party agent platform) or any 3P platform  
 **Identity Provider:** Microsoft Entra ID  
 
 ---
