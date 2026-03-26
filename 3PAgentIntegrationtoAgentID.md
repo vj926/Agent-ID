@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-This document demonstrates how a **3rd-party agent (Base44)** can authenticate using **Microsoft Entra Agent Identity** without using any Microsoft SDK.
+This document demonstrates how any **3rd-party agent (Base44 Agent in this session)** can authenticate using **Microsoft Entra Agent Identity**.
 
 The integration is based entirely on:
 
@@ -18,7 +18,6 @@ The integration is based entirely on:
 This proves:
 
 - Entra Agent Identity is **platform-agnostic**
-- No SDK or native OIDC support is required
 - Any system capable of HTTP calls can integrate
 
 ---
