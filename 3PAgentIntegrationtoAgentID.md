@@ -67,10 +67,7 @@ The flow works because Entra supports:
 ## 5. End-to-End Flow
 
 ### Step 1 — Generate FIC Token (Blueprint)
-
-```bash
-In this step, the **Blueprint application authenticates using its own credentials**  
-and requests a **FIC token for a specific Agent Identity**.
+In this step, the **Blueprint application authenticates using its own credentials** and requests a **FIC token for a specific Agent Identity**.
 
 ```bash
 POST https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token
@@ -81,9 +78,7 @@ grant_type=client_credentials
 fmi_path=<AGENT_IDENTITY_APP_ID>
 ```
 ### Step 2 — Exchange FIC for Agent Identity Token
-```bash
-In this step, the **Agent Identity takes over**. The Blueprint already generated a **FIC token (JWT)** in Step 1.  
-Now that token is used as proof to say: “I am allowed to act as this Agent Identity.”
+In this step, the **Agent Identity takes over**. The Blueprint already generated a **FIC token (JWT)** in Step 1. Now that token is used as proof to say: “I am allowed to act as this Agent Identity.”
 ```bash
 POST https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token
 Content-Type: application/x-www-form-urlencoded
