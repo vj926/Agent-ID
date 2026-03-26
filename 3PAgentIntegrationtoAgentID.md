@@ -1,25 +1,10 @@
 ---
-title: "Connecting a 3rd-Party Agent (Base44) to Microsoft Entra Agent Identity"
-author: "Vijaya Nukala"
-date: "2026-03-26"
-status: "Successfully completed"
-platform: "Base44 (3rd-party agent platform)"
-identity_provider: "Microsoft Entra ID"
+**Title: Connecting a 3rd-Party Agent (Base44) to Microsoft Entra Agent Identity**
 ---
 
 # Connecting a 3rd-Party Agent (Base44) to Microsoft Entra Agent Identity
 
-> **Git note:** This document is wrapped in a fenced Markdown block to guarantee
-> correct formatting when copy-pasted into GitHub, Azure DevOps, or any Markdown renderer.
-
-**Author:** Vijaya Nukala
-
-**Date:** March 26, 2026
-
-**Status:** Successfully completed
-
 **Platform:** Base44 (3rd-party agent platform)
-
 **Identity Provider:** Microsoft Entra ID
 
 ---
@@ -35,8 +20,6 @@ Because the flow uses only HTTP POST requests and JWT assertions, **any agent pl
 This proof establishes that:
 
 - Entra Agent Identity is platform-agnostic
-- No native OIDC support is required in the agent platform
-- No Microsoft SDK is required
 - The resulting identity is real, signed, auditable, and enterprise-grade
 
 ---
