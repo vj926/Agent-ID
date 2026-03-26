@@ -183,3 +183,20 @@ export default async function handler(req) {
   }
 }
 ```
+### Step 6:Trigger the `getEntraData` backend function from the Base44 agent.
+
+**Result:**
+```json
+{
+  "success": true,
+  "message": "Base44 Agent successfully authenticated as Entra Agent Identity",
+  "agentIdentity": {
+    "appId": "5d3b28ae-7458-4184-a76b-bbe3a6c48a96",
+    "subject": "5d3b28ae-7458-4184-a76b-bbe3a6c48a96",
+    "issuer": "https://login.microsoftonline.com/98430660-.../v2.0",
+    "tenantId": "98430660-2a7e-4e6b-b49c-800a8ba8b657",
+    "tokenType": "app",
+    "expiresAt": "2026-03-26T08:48:36.000Z"
+  }
+}
+```
