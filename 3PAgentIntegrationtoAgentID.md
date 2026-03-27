@@ -33,7 +33,7 @@ Enable a **Base44 agent** to authenticate as a **Microsoft Entra Agent Identity*
 
 | Asset | Details |
 |------|--------|
-| Tenant ID | `98430660-2a7e-4e6b-b49c-800a8ba8b657` |
+| Tenant ID | `Microsoft_Tenant_ID` |
 | Blueprint | Steps in AgentID+Blueprint.md |
 | Agent Identity | Steps in AgentID+Blueprint.md |
 | Base44 Agent | Created |
